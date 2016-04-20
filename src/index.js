@@ -2,6 +2,7 @@
 'use strict';
 
 const Hapi = require('hapi');
+const Boom = require('boom');
 
 const server = new Hapi.Server();
 server.connection({
@@ -12,13 +13,13 @@ server.connection({
 server.route(require('../routes/counter-routes')); // require('../routes/kvstore-routes')]);
 
 // The root directory should return a 403 error for any request to it.
-// server.route({
-//   method: ['GET', 'POST', 'PUT', 'DELETE'],
-//   path: '/',
-//   handler: function(req, res) {
-//     return res('');
-//   }
-// });
+server.route({
+    method: ['GET', 'POST', 'PUT', 'DELETE'],
+    path: '/',
+    handler: function (request, reply) {
+      return reply(Boom.forbidden('Forbidden'));
+    }
+});
 
 server.start((err) => {
   if(err)
