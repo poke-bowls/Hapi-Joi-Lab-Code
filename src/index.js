@@ -1,3 +1,4 @@
+
 'use strict';
 
 const Hapi = require('hapi');
@@ -8,17 +9,20 @@ server.connection({
   port: 8000
 });
 
-server.route({
-  method: 'GET',
-  path: '/',
-  handler: function(req, res) {
-    return res('Hello World!');
-  }
-});
+server.route(require('../routes/counter-routes')); // require('../routes/kvstore-routes')]);
+
+// The root directory should return a 403 error for any request to it.
+// server.route({
+//   method: ['GET', 'POST', 'PUT', 'DELETE'],
+//   path: '/',
+//   handler: function(req, res) {
+//     return res('');
+//   }
+// });
 
 server.start((err) => {
-  if(err) {
+  if(err)
     throw err;
-  }
-  console.log('Server running at:', server.info.uri);
+
+  console.log("Server started on " + server.info.uri);
 });
