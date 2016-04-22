@@ -61,6 +61,27 @@ all Numbers must be integer
 | POST /kvstore/array/number | **set** : an object {   **key** : String, only(numbers, letters, underscore, or dashes are allowed),   **value** : Array of Numbers between 0 and 1000 }                                                           | `{ k : v }` _where `k` is the "key" set, and where `v` is the "value" set_             | if the key already exists, return a 409 error status code |
 | POST /kvstore/array        | **set** : an object {   **key** : String, only(numbers, letters, underscore, or dashes are allowed), the key name,   **value** : Array of String values with max string length 10, or Numbers between 0 and 1000 } | `{ k : v }` _where `k` is the "key" set, and where `v` is the "value" set_             | if the key already exists, return a 409 error status code |
 
+### Counter
+
+| Route                  | Lab Test                                                                                                                                                                             | Notes |
+|------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------|
+| GET /counter           | expect return value `0`                                                                                                                                                              |       |
+| GET /counter           | set payload/params `params.hello = "world"`   expect joi validation error                                                                                                            |       |
+| POST /counter          | set payload to `counter = 50`   expect the response.body to be `{"counter":50}`   expect the response status to be 200                                                               |       |
+| POST /counter          | set payload to `counter = -2`    expect the response status to be 400  expect the response body to be a joi validation error                                                         |       |
+| POST /counter          | set payload to `counter = 1002`   expect the response status to be 400 expect the response body to be a joi validation error                                                         |       |
+| POST /counter          | set payload to `counter = "zero"` expect the response status to be 400 expect the response body to be a joi validation error                                                         |       |
+| PUT /counter/increment | first, set the value to 0 POST payload `counter = 0` then PUT to /counter/increment expect the response status to be 200 expect the response body to be `{"counter":1}`              |       |
+| PUT /counter/increment | first, set the value to 1000 POST payload `counter = 1000` then PUT to /counter/increment expect the response status to be 400 expect the response body to be a joi validation error |       |
+| PUT /counter/decrement | first, set the value to 1000 POST payload `counter = 1000` then PUT to /counter/decrement expect the response status to be 200 expect the response body to be `{"counter":999}`      |       |
+| PUT /counter/decrement | first, set the value to 0 POST payload `counter = 0` then PUT to /counter/decrement expect the response status to be 400 expect the response body to be a joi validation error       |       |
+
+_there are a few other tests of the counter api spec that would make sense to add_
+
+### KVStore
+
+Challenge: can you write exhaustive tests that enforce the validation rules and expected behavior set in the kvstore api spec?
+
 ## Tasks
 
 - [ ] install the npm module `n` globally

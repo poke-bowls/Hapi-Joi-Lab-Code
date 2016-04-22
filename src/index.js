@@ -10,14 +10,15 @@ server.connection({
   port: 8000
 });
 
-server.route(require('../routes/counter-routes')); // require('../routes/kvstore-routes')]);
+let routes = require('../routes');
+server.route(routes);
 
 // The root directory should return a 403 error for any request to it.
 server.route({
     method: ['GET', 'POST', 'PUT', 'DELETE'],
     path: '/',
-    handler: function (request, reply) {
-      return reply(Boom.forbidden('Forbidden'));
+    handler: function (req, res) {
+      return res(Boom.forbidden('Forbidden'));
     }
 });
 
