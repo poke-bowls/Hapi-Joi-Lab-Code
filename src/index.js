@@ -17,14 +17,26 @@ server.route(routes);
 server.route({
     method: ['GET', 'POST', 'PUT', 'DELETE'],
     path: '/',
-    handler: function (req, res) {
+    handler: (req, res) => {
       return res(Boom.forbidden('Forbidden'));
     }
 });
 
-server.start((err) => {
+server.ext('onPreResponse', (request, reply) => {
+  let req = request.response;
+  if(req.isBoom && req.statusCode === 500 || req.statusCode === undefined) {
+    return reply(Boom.badRequest(req.message));
+  }
+  return reply.continue();
+});
+
+if(!module.parent) {
+  server.start((err) => {
   if(err)
     throw err;
 
   console.log("Server started on " + server.info.uri);
-});
+  });
+}
+
+module.exports = server;

@@ -4,7 +4,7 @@
   "description": "Have a fully tested hapi api server with 2 sets of endpoints.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node ./node_modules/lab/bin/lab -e lab -m 5000 ./lab"
   },
   "repository": {
     "type": "git",
