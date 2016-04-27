@@ -20,7 +20,7 @@ lab.experiment('Counter', () => {
       let result = res.result;
       expect(res.statusCode).to.equal(200);
       expect(result).to.be.an.object();
-      expect(result).to.include({"counter": 0});
+      expect(result).to.deep.equal({"counter": 0});
       expect(result.counter).to.equal(0);
       done();
     });
@@ -38,7 +38,7 @@ lab.experiment('Counter', () => {
     });
   });
 
-  test('POST /counter set payload counter to 50', (done) => {
+  test('POST /counter set payload counter to 50, expect return value 50', (done) => {
     const options = {
       method: 'POST',
       url: '/counter',
@@ -49,12 +49,12 @@ lab.experiment('Counter', () => {
     server.inject(options, (res) => {
       let result = res.result;
       expect(res.statusCode).to.equal(200);
-      expect(result).to.include({"counter": 50});
+      expect(result).to.deep.equal({"counter": 50});
       done();
     });
   });
 
-  test('POST /counter set payload counter to -2', (done) => {
+  test('POST /counter set payload counter to -2, expect joi validation error', (done) => {
       const options = {
         method: 'POST',
         url: '/counter',
@@ -70,7 +70,7 @@ lab.experiment('Counter', () => {
       });
     });
 
-    test('POST /counter set payload counter to 1002', (done) => {
+    test('POST /counter set payload counter to 1002, expect joi validation error', (done) => {
       const options = {
         method: 'POST',
         url: '/counter',
@@ -86,7 +86,7 @@ lab.experiment('Counter', () => {
       });
     });
 
-    test('POST /counter set payload counter to "zero"', (done) => {
+    test('POST /counter set payload counter to "zero", expect joi validation error', (done) => {
       const options = {
         method: 'POST',
         url: '/counter',
@@ -102,7 +102,7 @@ lab.experiment('Counter', () => {
       });
     });
 
-    test('POST /counter set payload counter to 0, then PUT to /counter/increment', (done) => {
+    test('POST /counter set payload counter to 0, then PUT to /counter/increment, expect return value 1', (done) => {
       const options = {
         method: 'POST',
         url: '/counter',
@@ -111,7 +111,6 @@ lab.experiment('Counter', () => {
         }
       };
       server.inject(options, (res) => {
-        let result = res.result;
       });
 
       const options2 =  {
@@ -121,12 +120,12 @@ lab.experiment('Counter', () => {
       server.inject(options2, (res) => {
         let result = res.result;
         expect(res.statusCode).to.equal(200);
-        expect(result).to.include({"counter": 1});
+        expect(result).to.deep.equal({"counter": 1});
         done();
       });
     });
 
-    test('POST /counter set payload counter to 1000, then PUT to /counter/increment', (done) => {
+    test('POST /counter set payload counter to 1000, then PUT to /counter/increment, expect joi validation error', (done) => {
        const options = {
         method: 'POST',
         url: '/counter',
@@ -149,7 +148,7 @@ lab.experiment('Counter', () => {
       });
     });
 
-    test('POST /counter to set payload counter to 1000, then PUT to /counter/decrement', (done) => {
+    test('POST /counter to set payload counter to 1000, then PUT to /counter/decrement, expect return value 999', (done) => {
       const options = {
         method:'POST',
         url: '/counter',
@@ -167,9 +166,31 @@ lab.experiment('Counter', () => {
       server.inject(options2, (res) => {
         let result = res.result;
         expect(res.statusCode).to.equal(200);
-        expect(result).to.include({"counter": 999});
+        expect(result).to.deep.equal({"counter": 999});
         done();
       });
     });
 
+    test('POST /counter to set payload counter to 0, then PUT to /counter/decrement, expect joi validation error', (done) => {
+      const options = {
+        method:'POST',
+        url: '/counter',
+        payload: {
+          counter: 0
+        }
+      };
+      server.inject(options, (res) => {
+      });
+
+      const options2 = {
+        method: 'PUT',
+        url: '/counter/decrement',
+      };
+      server.inject(options2, (res) => {
+        let result = res.result;
+        expect(res.statusCode).to.equal(400);
+        expect(result.message).to.equal('child "counter" fails because ["counter" must be larger than or equal to 0]');
+        done();
+      });
+    });
 });

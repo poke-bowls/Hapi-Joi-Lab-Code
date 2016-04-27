@@ -24,7 +24,8 @@ server.route({
 
 server.ext('onPreResponse', (request, reply) => {
   let req = request.response;
-  if(req.isBoom && req.statusCode === 500 || req.statusCode === undefined) {
+  let p = request.url.path;
+  if(p == '/counter/decrement' || p === '/counter/increment' ? req.statusCode === 500 || req.statusCode === undefined : false) {
     return reply(Boom.badRequest(req.message));
   }
   return reply.continue();
