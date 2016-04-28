@@ -35,7 +35,12 @@ module.exports = [{
   method: 'GET',
   path: '/counter',
   config: {
-    handler: internals.getCounter
+    handler: internals.getCounter,
+    validate: {
+      params: false,
+      payload: false,
+      query: false
+    }
   }
 }, {
   method: 'POST',

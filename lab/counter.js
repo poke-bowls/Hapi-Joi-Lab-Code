@@ -26,14 +26,15 @@ lab.experiment('Counter', () => {
     });
   });
 
-  test.skip('GET set payload/params to params.hello = world to expect joi validation error', (done) => {
+  test('GET set payload/params to params.hello = world to expect joi validation error', (done) => {
     const options = {
       method: 'GET',
-      url: '/counter'
+      url: '/counter?hello=world'
     };
     server.inject(options, (res) => {
       let result = res.result;
-      console.log(result);
+      expect(res.statusCode).to.equal(400);
+      expect(result.message).to.deep.equal('"hello" is not allowed');
       done();
     });
   });
@@ -50,6 +51,7 @@ lab.experiment('Counter', () => {
       let result = res.result;
       expect(res.statusCode).to.equal(200);
       expect(result).to.deep.equal({"counter": 50});
+      expect(result.counter).to.equal(50);
       done();
     });
   });
@@ -167,6 +169,7 @@ lab.experiment('Counter', () => {
         let result = res.result;
         expect(res.statusCode).to.equal(200);
         expect(result).to.deep.equal({"counter": 999});
+        expect(result.counter).to.equal(999);
         done();
       });
     });
