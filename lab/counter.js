@@ -57,114 +57,110 @@ lab.experiment('Counter', () => {
   });
 
   test('POST /counter set payload counter to -2, expect joi validation error', (done) => {
-      const options = {
-        method: 'POST',
-        url: '/counter',
-        payload: {
-          counter: -2
-        }
-      };
-      server.inject(options, (res) => {
-        let result = res.result;
-        expect(res.statusCode).to.equal(400);
-        expect(result.message).to.equal('child \"counter\" fails because [\"counter\" must be larger than or equal to 0]');
-        done();
-      });
+    const options = {
+      method: 'POST',
+      url: '/counter',
+      payload: {
+        counter: -2
+      }
+    };
+    server.inject(options, (res) => {
+      let result = res.result;
+      expect(res.statusCode).to.equal(400);
+      expect(result.message).to.equal('child \"counter\" fails because [\"counter\" must be larger than or equal to 0]');
+      done();
     });
+  });
 
-    test('POST /counter set payload counter to 1002, expect joi validation error', (done) => {
-      const options = {
-        method: 'POST',
-        url: '/counter',
-        payload: {
-          counter: 1002
-        }
-      };
-      server.inject(options, (res) => {
-        let result = res.result;
-        expect(res.statusCode).to.equal(400);
-        expect(result.message).to.equal('child "counter" fails because ["counter" must be less than or equal to 1000]');
-        done();
-      });
+  test('POST /counter set payload counter to 1002, expect joi validation error', (done) => {
+    const options = {
+      method: 'POST',
+      url: '/counter',
+      payload: {
+        counter: 1002
+      }
+    };
+    server.inject(options, (res) => {
+      let result = res.result;
+      expect(res.statusCode).to.equal(400);
+      expect(result.message).to.equal('child "counter" fails because ["counter" must be less than or equal to 1000]');
+      done();
     });
+  });
 
-    test('POST /counter set payload counter to "zero", expect joi validation error', (done) => {
-      const options = {
-        method: 'POST',
-        url: '/counter',
-        payload: {
-          counter: "zero"
-        }
-      };
-      server.inject(options, (res) => {
-        let result = res.result;
-        expect(res.statusCode).to.equal(400);
-        expect(result.message).to.equal('child "counter" fails because ["counter" must be a number]');
-        done();
-      });
+  test('POST /counter set payload counter to "zero", expect joi validation error', (done) => {
+    const options = {
+      method: 'POST',
+      url: '/counter',
+      payload: {
+        counter: "zero"
+      }
+    };
+    server.inject(options, (res) => {
+      let result = res.result;
+      expect(res.statusCode).to.equal(400);
+      expect(result.message).to.equal('child "counter" fails because ["counter" must be a number]');
+      done();
     });
+  });
 
-    test('POST /counter set payload counter to 0, then PUT to /counter/increment, expect return value 1', (done) => {
-      const options = {
-        method: 'POST',
-        url: '/counter',
-        payload: {
-          counter: 0
-        }
-      };
-      server.inject(options, (res) => {
-      });
-
-      const options2 =  {
-        method: 'PUT',
-        url: '/counter/increment'
-      };
+  test('POST /counter set payload counter to 0, then PUT to /counter/increment, expect return value 1', (done) => {
+    const options = {
+      method: 'POST',
+      url: '/counter',
+      payload: {
+        counter: 0
+      }
+    };
+    const options2 =  {
+      method: 'PUT',
+      url: '/counter/increment'
+    };
+    server.inject(options, (res) => {
       server.inject(options2, (res) => {
-        let result = res.result;
-        expect(res.statusCode).to.equal(200);
-        expect(result).to.deep.equal({"counter": 1});
-        done();
+      let result = res.result;
+      expect(res.statusCode).to.equal(200);
+      expect(result).to.deep.equal({"counter": 1});
+      done();
       });
     });
+  });
 
-    test('POST /counter set payload counter to 1000, then PUT to /counter/increment, expect joi validation error', (done) => {
-       const options = {
-        method: 'POST',
-        url: '/counter',
-        payload: {
-          counter: 1000
-        }
-      };
-      server.inject(options, (res) => {
-      });
-
-      const options2 =  {
-        method: 'PUT',
-        url: '/counter/increment'
-      };
+  test('POST /counter set payload counter to 1000, then PUT to /counter/increment, expect joi validation error', (done) => {
+     const options = {
+      method: 'POST',
+      url: '/counter',
+      payload: {
+        counter: 1000
+      }
+    };
+    const options2 =  {
+      method: 'PUT',
+      url: '/counter/increment'
+    };
+    server.inject(options, (res) => {
       server.inject(options2, (res) => {
-        let result = res.result;
-        expect(res.statusCode).to.equal(400);
-        expect(result.message).to.equal('child "counter" fails because ["counter" must be less than or equal to 1000]');
-        done();
+      let result = res.result;
+      expect(res.statusCode).to.equal(400);
+      expect(result.message).to.equal('child "counter" fails because ["counter" must be less than or equal to 1000]');
+      done();
       });
     });
+  });
 
-    test('POST /counter to set payload counter to 1000, then PUT to /counter/decrement, expect return value 999', (done) => {
-      const options = {
-        method:'POST',
-        url: '/counter',
-        payload: {
-          counter: 1000
-        }
-      };
-      server.inject(options, (res) => {
-      });
-
-      const options2 = {
-        method: 'PUT',
-        url: '/counter/decrement',
-      };
+  test('POST /counter to set payload counter to 1000, then PUT to /counter/decrement, expect return value 999', (done) => {
+    const options = {
+      method:'POST',
+      url: '/counter',
+      payload: {
+        counter: 1000
+      }
+    };
+    const options2 = {
+      method: 'PUT',
+      url: '/counter/decrement',
+    };
+    server.inject(options, (res) => {
       server.inject(options2, (res) => {
         let result = res.result;
         expect(res.statusCode).to.equal(200);
@@ -173,22 +169,21 @@ lab.experiment('Counter', () => {
         done();
       });
     });
+  });
 
-    test('POST /counter to set payload counter to 0, then PUT to /counter/decrement, expect joi validation error', (done) => {
-      const options = {
-        method:'POST',
-        url: '/counter',
-        payload: {
-          counter: 0
-        }
-      };
-      server.inject(options, (res) => {
-      });
-
-      const options2 = {
-        method: 'PUT',
-        url: '/counter/decrement',
-      };
+  test('POST /counter to set payload counter to 0, then PUT to /counter/decrement, expect joi validation error', (done) => {
+    const options = {
+      method:'POST',
+      url: '/counter',
+      payload: {
+        counter: 0
+      }
+    };
+    const options2 = {
+      method: 'PUT',
+      url: '/counter/decrement',
+    };
+    server.inject(options, (res) => {
       server.inject(options2, (res) => {
         let result = res.result;
         expect(res.statusCode).to.equal(400);
@@ -196,4 +191,5 @@ lab.experiment('Counter', () => {
         done();
       });
     });
+  });
 });
